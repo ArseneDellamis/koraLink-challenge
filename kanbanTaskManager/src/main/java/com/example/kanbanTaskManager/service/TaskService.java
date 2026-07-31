@@ -6,9 +6,12 @@ import com.example.kanbanTaskManager.enitiy.ColumnEntity;
 import com.example.kanbanTaskManager.enitiy.Comment;
 import com.example.kanbanTaskManager.enitiy.Task;
 import com.example.kanbanTaskManager.enitiy.User;
+import com.example.kanbanTaskManager.enitiy.enums.ActivityAction;
 import com.example.kanbanTaskManager.enitiy.enums.Priority;
+import com.example.kanbanTaskManager.events.ActivityEvent;
 import com.example.kanbanTaskManager.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +29,9 @@ public class TaskService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final WorkspaceMemberRepository workspaceMemberRepository;
+    private final ApplicationEventPublisher eventPublisher;
+
+
 
     @Transactional
     public TaskDto.TaskResponse createTask(UUID columnId, TaskDto.CreateTaskRequest request, User currentUser) {
@@ -57,6 +63,14 @@ public class TaskService {
 
         task = taskRepository.save(task);
 
+        eventPublisher.publishEvent(new ActivityEvent(
+                ActivityAction.TASK_CREATED.name(),
+                "Created task: " + task.getTitle(),
+                currentUser,
+                column.getBoard().getWorkspace(),
+                task
+        ));
+
         return mapToTaskResponse(task);
     }
 
@@ -75,6 +89,14 @@ public class TaskService {
 
         task = taskRepository.save(task);
 
+        eventPublisher.publishEvent(new ActivityEvent(
+                ActivityAction.TASK_MOVED.name(),
+                "Moved task '" + task.getTitle() + "' to column '" + targetColumn.getName() + "'",
+                currentUser,
+                targetColumn.getBoard().getWorkspace(),
+                task
+        ));
+
         return mapToTaskResponse(task);
     }
 
@@ -92,6 +114,14 @@ public class TaskService {
                 .build();
 
         comment = commentRepository.save(comment);
+
+        eventPublisher.publishEvent(new ActivityEvent(
+                ActivityAction.COMMENT_ADDED.name(),
+                "Added a comment to task: " + task.getTitle(),
+                currentUser,
+                task.getColumn().getBoard().getWorkspace(),
+                task
+        ));
 
         return mapToCommentResponse(comment);
     }
