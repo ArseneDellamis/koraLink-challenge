@@ -17,4 +17,10 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
 
     @Query("SELECT MAX(t.position) FROM Task t WHERE t.column.id = :columnId")
     Integer findMaxPositionByColumnId(@Param("columnId") UUID columnId);
+
+    @Query("SELECT COUNT(t) FROM Task t WHERE t.column.board.workspace.id = :workspaceId AND t.dueDate < CURRENT_DATE")
+    long countOverdueTasksByWorkspaceId(@Param("workspaceId") UUID workspaceId);
+
+    @Query("SELECT t.column.name, COUNT(t) FROM Task t WHERE t.column.board.workspace.id = :workspaceId GROUP BY t.column.name")
+    List<Object[]> countTasksByColumnForWorkspace(@Param("workspaceId") UUID workspaceId);
 }
