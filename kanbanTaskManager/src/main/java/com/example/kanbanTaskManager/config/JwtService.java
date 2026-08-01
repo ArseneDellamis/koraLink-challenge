@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +15,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.example.kanbanTaskManager.config.AuthConstants.SECRET;
-
 
 @Service
 public class JwtService {
+
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    @Value("${jwt.expiration}")
+    private long jwtExpirationMs;
     public String extractUsername(String token) {
 
         return extractClaims(token, Claims::getSubject);
@@ -32,7 +37,7 @@ public class JwtService {
                 .claims(extraClaims)
                 .subject(details.getUsername())
                 .issuedAt(new Date((System.currentTimeMillis())))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 *24))
+                .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
 
@@ -70,7 +75,7 @@ public class JwtService {
     }
 
     private SecretKey getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
