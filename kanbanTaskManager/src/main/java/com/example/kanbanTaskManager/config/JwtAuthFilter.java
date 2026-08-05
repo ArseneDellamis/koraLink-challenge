@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,18 +17,21 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+import static com.example.kanbanTaskManager.config.AuthConstants.HEADER_STRING;
+import static com.example.kanbanTaskManager.config.AuthConstants.TOKEN_PREFIX;
+
 @Component
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
-    @Autowired
-    public JwtAuthFilter(JwtService jwtService, UserDetailsService userDetailsService) {
-        this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
-    }
+//    @Autowired
+//    public JwtAuthFilter(JwtService jwtService, UserDetailsService userDetailsService) {
+//        this.jwtService = jwtService;
+//        this.userDetailsService = userDetailsService;
+//    }
 
     @Override
     protected void doFilterInternal(
@@ -36,10 +40,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        final String authenticationHeader = request.getHeader("Authorization");
+        final String authenticationHeader = request.getHeader(HEADER_STRING);
         final String jwt;
         final String userEmail;
-        if(authenticationHeader == null || !authenticationHeader.startsWith("Bearer ")) {
+        if(authenticationHeader == null || !authenticationHeader.startsWith(TOKEN_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
         }

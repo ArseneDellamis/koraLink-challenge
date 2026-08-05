@@ -6,6 +6,8 @@ import com.example.kanbanTaskManager.dto.AuthResponse;
 import com.example.kanbanTaskManager.dto.RegisterRequest;
 import com.example.kanbanTaskManager.enitiy.enums.AuthRole;
 import com.example.kanbanTaskManager.enitiy.User;
+import com.example.kanbanTaskManager.exceptionHandler.BadRequestException;
+import com.example.kanbanTaskManager.exceptionHandler.DuplicateResourceException;
 import com.example.kanbanTaskManager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,18 +36,28 @@ public class AuthService {
             try {
                 role = AuthRole.valueOf(registerRequest.getRole().trim().toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("Invalid role: " + registerRequest.getRole());
+                throw new BadRequestException("Invalid role: " + registerRequest.getRole());
             }
+        }
+
+        if (!registerRequest.getConfirmPassword().equals(registerRequest.getPassword())){
+            throw new BadRequestException("passwords don't match");
+        }
+        if (repository.existsByEmail(
+                registerRequest.getEmail()
+        )){
+
+            throw new DuplicateResourceException("Email already registered");
         }
 
 
         User user = User.builder()
-                .full_name(registerRequest.getFullName())
+                .fullName(registerRequest.getFullName())
                 .email(registerRequest.getEmail())
-                .passwords(passwordEncoder.encode(registerRequest.getPassword()))
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .authRole(role)
-                .created_at(LocalDateTime.now())
-                .updated_at(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
         repository.save(user);
 

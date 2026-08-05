@@ -6,6 +6,7 @@ import com.example.kanbanTaskManager.enitiy.User;
 import com.example.kanbanTaskManager.enitiy.Workspace;
 import com.example.kanbanTaskManager.enitiy.WorkspaceMember;
 import com.example.kanbanTaskManager.enitiy.enums.WorkspaceRole;
+import com.example.kanbanTaskManager.exceptionHandler.ResourceNotFoundException;
 import com.example.kanbanTaskManager.repository.UserRepository;
 import com.example.kanbanTaskManager.repository.WorkspaceMemberRepository;
 import com.example.kanbanTaskManager.repository.WorkspaceRepository;
@@ -60,12 +61,12 @@ public class WorkspaceService {
     @Transactional
     public WorkspaceDto.MemberResponse addMember(UUID workspaceId, WorkspaceDto.AddMemberRequest request, User currentUser) {
         Workspace workspace = workspaceRepository.findById(workspaceId)
-                .orElseThrow(() -> new IllegalArgumentException("Workspace not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Workspace not found"));
 
         validateAdminAccess(workspaceId, currentUser.getId());
 
         User memberToAdd = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("User to add not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User to add not found"));
 
         if (workspaceMemberRepository.existsByWorkspaceIdAndUserId(workspaceId, memberToAdd.getId())) {
             throw new IllegalArgumentException("User is already a member of this workspace");
@@ -117,7 +118,7 @@ public class WorkspaceService {
         return WorkspaceDto.MemberResponse.builder()
                 .memberId(member.getId())
                 .userId(member.getUser().getId())
-                .fullName(member.getUser().getFull_name())
+                .fullName(member.getUser().getFullName())
                 .email(member.getUser().getEmail())
                 .role(member.getRole())
                 .joinedAt(member.getJoinedAt())

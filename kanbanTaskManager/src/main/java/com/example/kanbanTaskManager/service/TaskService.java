@@ -166,9 +166,9 @@ public class TaskService {
                 .dueDate(task.getDueDate())
                 .columnId(task.getColumn().getId())
                 .assigneeId(task.getAssignee() != null ? task.getAssignee().getId() : null)
-                .assigneeName(task.getAssignee() != null ? task.getAssignee().getFull_name() : null)
+                .assigneeName(task.getAssignee() != null ? task.getAssignee().getFullName() : null)
                 .creatorId(task.getCreator().getId())
-                .creatorName(task.getCreator().getFull_name())
+                .creatorName(task.getCreator().getFullName())
                 .comments(commentResponses)
                 .createdAt(task.getCreatedAt())
                 .updatedAt(task.getUpdatedAt())
@@ -181,7 +181,7 @@ public class TaskService {
                 .content(comment.getContent())
                 .taskId(comment.getTask().getId())
                 .authorId(comment.getAuthor().getId())
-                .authorName(comment.getAuthor().getFull_name())
+                .authorName(comment.getAuthor().getFullName())
                 .createdAt(comment.getCreatedAt())
                 .build();
     }

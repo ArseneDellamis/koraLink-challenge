@@ -43,7 +43,7 @@ public class ActivityLogService {
                 .action(log.getAction())
                 .details(log.getDetails())
                 .actorId(log.getActor().getId())
-                .actorName(log.getActor().getFull_name())
+                .actorName(log.getActor().getFullName())
                 .taskId(log.getTask() != null ? log.getTask().getId() : null)
                 .createdAt(log.getCreatedAt())
                 .build();
