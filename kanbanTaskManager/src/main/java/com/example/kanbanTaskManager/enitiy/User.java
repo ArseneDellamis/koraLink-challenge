@@ -2,10 +2,15 @@ package com.example.kanbanTaskManager.enitiy;
 
 import com.example.kanbanTaskManager.enitiy.enums.AuthRole;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,17 +30,31 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @NotBlank(message = "Full name is required")
+    @Size(min = 2, max = 100, message = "Full name must be between 2 and 100 characters")
     @Column(nullable = false)
-    private String full_name;
-    @Column( nullable = false)
+    private String fullName;
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
     @Column(name = "password", nullable = false)
-    private String passwords;
-    @Column(nullable = false)
+    private String password;
+
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private AuthRole authRole;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -46,7 +65,7 @@ public class User implements UserDetails {
 
     @Override
     public @Nullable String getPassword() {
-        return passwords;
+        return password;
     }
 
     @Override
