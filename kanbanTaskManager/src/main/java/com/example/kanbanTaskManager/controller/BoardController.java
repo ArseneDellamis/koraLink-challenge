@@ -4,6 +4,7 @@ import com.example.kanbanTaskManager.dto.BoardDto;
 import com.example.kanbanTaskManager.dto.ColumnDto;
 import com.example.kanbanTaskManager.enitiy.User;
 import com.example.kanbanTaskManager.service.BoardService;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,7 @@ public class BoardController {
     @GetMapping("/boards/{boardId}")
     public ResponseEntity<BoardDto.BoardResponse> getBoardById(
             @PathVariable UUID boardId,
+            @Parameter(hidden = true)
             @AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(boardService.getBoardById(boardId, currentUser));
     }

@@ -1,5 +1,6 @@
 package com.example.kanbanTaskManager.enitiy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,6 +28,7 @@ public class ActivityLog {
     private String details;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "actor_id", nullable = false)
     private User actor;
 

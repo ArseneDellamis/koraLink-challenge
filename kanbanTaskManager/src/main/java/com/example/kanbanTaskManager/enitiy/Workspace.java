@@ -1,5 +1,6 @@
 package com.example.kanbanTaskManager.enitiy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,7 @@ public class Workspace {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 

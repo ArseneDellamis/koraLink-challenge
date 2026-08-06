@@ -1,6 +1,7 @@
 package com.example.kanbanTaskManager.enitiy;
 
 import com.example.kanbanTaskManager.enitiy.enums.Priority;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -47,10 +48,12 @@ public class Task {
     private ColumnEntity column;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "assignee_id")
     private User assignee;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "creator_id", nullable = false)
     private User creator;
 

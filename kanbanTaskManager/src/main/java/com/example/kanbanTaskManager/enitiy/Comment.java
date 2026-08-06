@@ -1,5 +1,6 @@
 package com.example.kanbanTaskManager.enitiy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -28,6 +29,7 @@ public class Comment {
     private Task task;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
 

@@ -1,6 +1,7 @@
 package com.example.kanbanTaskManager.enitiy;
 
 import com.example.kanbanTaskManager.enitiy.enums.WorkspaceRole;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -26,10 +27,12 @@ public class WorkspaceMember {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "workspace_id", nullable = false)
     private Workspace workspace;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

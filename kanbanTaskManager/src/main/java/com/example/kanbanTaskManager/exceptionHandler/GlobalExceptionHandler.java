@@ -1,6 +1,7 @@
 package com.example.kanbanTaskManager.exceptionHandler;
 
 import com.example.kanbanTaskManager.dto.ValidationErrorResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,6 +20,7 @@ import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
+@Hidden
 public class GlobalExceptionHandler {
 
     private ErrorResponse buildError(
