@@ -30,9 +30,23 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) ->
                         authorize
                                 // Allow access to authentication endpoints (register, login)
-                                .requestMatchers("/actuator/health", "/actuator/info").permitAll()
-                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                                .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers(
+                                        "/v3/api-docs/**",
+                                        "/v3/api-docs",
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html"
+                                ).permitAll()
+
+                                .requestMatchers("/actuator/health",
+                                        "/actuator/info"
+                                ).permitAll()
+
+                                .requestMatchers("/swagger-ui/**",
+                                        "/v3/api-docs/**"
+                                ).permitAll()
+
+                                .requestMatchers("/auth/**"
+                                ).permitAll()
 
                                 // Allow GET requests to /koraLink/api/users/** for all authenticated users
                                 .requestMatchers(HttpMethod.GET, "/koraLink/api/users/**").authenticated()
